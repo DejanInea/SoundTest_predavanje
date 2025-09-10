@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1100" viewBox="0 0 1500 1100">
+  <defs>
+    <style type="text/css"><![CDATA[
+      .title { font: 700 22px 'DejaVu Sans', Arial, sans-serif; fill: #111; }
+      .label { font: 600 16px 'DejaVu Sans', Arial, sans-serif; fill: #111; }
+      .small { font: 13px 'DejaVu Sans', Arial, sans-serif; fill: #222; }
+      .node { fill: #fff; stroke: #2b6cb0; stroke-width: 2; rx: 8; }
+      .group { fill: #f7fafc; stroke: #cbd5e0; stroke-width: 2; rx: 12; }
+      .note  { fill: #fefcbf; stroke: #d69e2e; stroke-width: 1.5; rx: 8; }
+      .arrow { stroke: #444; stroke-width: 2; fill: none; }
+    ]]></style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="40" y="50" class="title">Workflow (with 10% Crossfade Overlap)</text>
+
+  <!-- Groups -->
+  <rect class="group" x="20"  y="80"  width="700" height="460"/>
+  <text class="label" x="40" y="110">Wave Player / I/O</text>
+
+  <rect class="group" x="740" y="80"  width="740" height="460"/>
+  <text class="label" x="760" y="110">Per‑Block Processing + Overlap (10%)</text>
+
+  <rect class="group" x="20"  y="560" width="1460" height="480"/>
+  <text class="label" x="40" y="590">Notes / Entropy / Parameters</text>
+
+  <!-- Left: I/O -->
+  <rect class="node" x="40" y="140" width="300" height="90"/>
+  <text class="label" x="60" y="168">main()</text>
+  <text class="small"  x="60" y="192">calls stream_wav(...)</text>
+
+  <rect class="node" x="40" y="250" width="300" height="120"/>
+  <text class="label" x="60" y="278">Setup</text>
+  <text class="small"  x="60" y="300">• open WAV, get rate/ch</text>
+  <text class="small"  x="60" y="320">• select_output_device()</text>
+  <text class="small"  x="60" y="340">• open PyAudio stream</text>
+
+  <rect class="node" x="40" y="390" width="300" height="120"/>
+  <text class="label" x="60" y="418">Loop (N=1024 frames)</text>
+  <text class="small"  x="60" y="442">readframes()</text>
+
+  <path class="arrow" d="M190,230 L190,248" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M190,370 L190,388" marker-end="url(#arrow)"/>
+
+  <!-- Right: processing chain with overlap -->
+  <rect class="node" x="760" y="140" width="320" height="90"/>
+  <text class="label" x="780" y="168">Decode → int16</text>
+  <text class="small"  x="780" y="192">_decode_any_to_int16()</text>
+
+  <rect class="node" x="760" y="250" width="320" height="110"/>
+  <text class="label" x="780" y="278">DCT Encode + Normalize</text>
+  <text class="small"  x="780" y="302">_dct_encode_int16_block()</text>
+  <text class="small"  x="780" y="322">→ 16‑bit coeffs + scales</text>
+
+  <rect class="node" x="760" y="380" width="320" height="90"/>
+  <text class="label" x="780" y="408">IDCT Decode</text>
+  <text class="small"  x="780" y="432">_dct_decode_int16_block()</text>
+
+  <rect class="node" x="1100" y="140" width="360" height="110"/>
+  <text class="label" x="1120" y="168">Entropy (value)</text>
+  <text class="small"  x="1120" y="192">on 16‑bit DCT payload</text>
+
+  <rect class="node" x="1100" y="270" width="360" height="110"/>
+  <text class="label" x="1120" y="298">Entropy (spectral)</text>
+  <text class="small"  x="1120" y="322">from DCT energy distribution</text>
+
+  <rect class="node" x="1100" y="400" width="360" height="110"/>
+  <text class="label" x="1120" y="428">10% Crossfade Overlap</text>
+  <text class="small"  x="1120" y="452">• last 10% fade‑out + next 10% fade‑in</text>
+  <text class="small"  x="1120" y="472">• overlap‑add to PCM output</text>
+
+  <!-- arrows in processing -->
+  <path class="arrow" d="M920,230 L920,247" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M920,360 L920,377" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1080,190 L1100,190" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1080,300 L1100,300" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1080,420 L1100,420" marker-end="url(#arrow)"/>
+
+  <!-- Output path -->
+  <rect class="node" x="380" y="140" width="300" height="90"/>
+  <text class="label" x="400" y="168">Audio Output</text>
+  <text class="small"  x="400" y="192">PyAudio stream.write()</text>
+
+  <rect class="node" x="380" y="250" width="300" height="90"/>
+  <text class="label" x="400" y="278">Optional Save</text>
+  <text class="small"  x="400" y="302">writeframesraw() → WAV</text>
+
+  <!-- wires to output -->
+  <path class="arrow" d="M340,430 C560,430 560,185 760,185" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1460,455 C1300,520 1180,520 1030,520 C830,520 660,200 520,200" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1460,455 C1300,560 1180,560 1030,560 C830,560 640,260 520,260" marker-end="url(#arrow)"/>
+
+  <!-- Bottom notes -->
+  <rect class="note" x="40" y="620" width="1420" height="60"/>
+  <text class="small" x="60" y="644">Crossfade detail: overlap = 10% of block (N/10 samples). Use linear or half‑sine ramps; maintain running tail buffer for fade‑out of previous block and fade‑in of current block, then overlap‑add to output.</text>
+  <text class="small" x="60" y="664">Latency ≈ overlap; ensure buffer sizes accommodate overlap‑add without underruns.</text>
+
+  <rect class="note" x="40" y="700" width="1420" height="60"/>
+  <text class="small" x="60" y="724">Entropy with overlap: compute value entropy on 16‑bit DCT payload (pre‑overlap). Spectral entropy uses DCT energy. When aggregating across blocks, normalize by effective non‑overlapped samples (N · (1−overlap)) to keep per‑block maxima comparable.</text>
+
+  <rect class="note" x="40" y="780" width="1420" height="80"/>
+  <text class="small" x="60" y="804">Normalization passing: per‑channel scale (max|C|) must be forwarded from encoder to decoder for each block; with overlap, scale belongs to the non‑overlapped core but is shared across the entire block window. Optionally smooth scales (e.g., EMA) to reduce pumping.</text>
+
+  <rect class="note" x="40" y="880" width="1420" height="100"/>
+  <text class="small" x="60" y="904">Parameters: sample rate 44.1 kHz; block size N=1024 frames; overlap 10% ⇒ 102 samples overlapped; channels=1/2; stream frames_per_buffer should allow headroom for overlap processing; UI timelines can map one glyph per core block (N·(1−overlap)).</text>
+  <text class="small" x="60" y="924">Windows: linear ramps are simplest; half‑sine or sqrt‑Hann reduce spectral coloration. For perfect reconstruction use complementary windows (sum of squares = 1 over overlap).</text>
+
+  <!-- Legend -->
+  <text class="label" x="40" y="1060">Legend: rounded boxes = functions/steps, gray groups = subsystems, arrows = data/control flow, yellow = notes.</text>
+</svg>
+

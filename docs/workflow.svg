@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+  <defs>
+    <style type="text/css"><![CDATA[
+      .title { font: 700 22px 'DejaVu Sans', Arial, sans-serif; fill: #111; }
+      .label { font: 600 16px 'DejaVu Sans', Arial, sans-serif; fill: #111; }
+      .small { font: 13px 'DejaVu Sans', Arial, sans-serif; fill: #222; }
+      .node { fill: #fff; stroke: #2b6cb0; stroke-width: 2; rx: 8; }
+      .group { fill: #f7fafc; stroke: #cbd5e0; stroke-width: 2; rx: 12; }
+      .note  { fill: #fefcbf; stroke: #d69e2e; stroke-width: 1.5; rx: 8; }
+      .arrow { stroke: #444; stroke-width: 2; fill: none; }
+    ]]></style>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="40" y="50" class="title">SoundTest_predavanje – Workflow (wave_player.py, synth_intro.py, frequency_visually.py)</text>
+
+  <!-- Groups -->
+  <rect class="group" x="20"  y="80"  width="660" height="420"/>
+  <text class="label" x="40" y="110">Wave Player (wave_player.py)</text>
+
+  <rect class="group" x="720" y="80"  width="640" height="420"/>
+  <text class="label" x="740" y="110">Per‑block Processing + Entropy</text>
+
+  <rect class="group" x="20"  y="520" width="1340" height="440"/>
+  <text class="label" x="40" y="550">Related Tools</text>
+
+  <!-- Wave Player – left column -->
+  <rect class="node" x="40" y="140" width="260" height="80"/>
+  <text class="label" x="60" y="168">main()</text>
+  <text class="small"  x="60" y="192">• optional: LIST_DEVICES</text>
+  <text class="small"  x="60" y="212">• calls stream_wav(...)</text>
+
+  <rect class="node" x="40" y="250" width="260" height="110"/>
+  <text class="label" x="60" y="278">Device & I/O Setup</text>
+  <text class="small"  x="60" y="300">• list_output_devices()</text>
+  <text class="small"  x="60" y="318">• select_output_device()</text>
+  <text class="small"  x="60" y="336">• open WAV, PyAudio stream</text>
+
+  <rect class="node" x="40" y="380" width="260" height="90"/>
+  <text class="label" x="60" y="408">Loop (per 1024 frames)</text>
+  <text class="small"  x="60" y="432">• readframes()</text>
+
+  <path class="arrow" d="M170,220 L170,245" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M170,360 L170,377" marker-end="url(#arrow)"/>
+
+  <!-- Processing – right column -->
+  <rect class="node" x="740" y="140" width="300" height="80"/>
+  <text class="label" x="760" y="168">Decode → int16</text>
+  <text class="small"  x="760" y="192">_decode_any_to_int16()</text>
+
+  <rect class="node" x="740" y="240" width="300" height="100"/>
+  <text class="label" x="760" y="268">DCT Encode + Normalize</text>
+  <text class="small"  x="760" y="292">_dct_encode_int16_block()</text>
+  <text class="small"  x="760" y="312">→ 16‑bit coeffs + scales</text>
+
+  <rect class="node" x="740" y="360" width="300" height="80"/>
+  <text class="label" x="760" y="388">IDCT Decode</text>
+  <text class="small"  x="760" y="412">_dct_decode_int16_block()</text>
+
+  <rect class="node" x="1080" y="140" width="260" height="110"/>
+  <text class="label" x="1100" y="168">Entropy (value)</text>
+  <text class="small"  x="1100" y="192">entropy_bits_from_block()</text>
+  <text class="small"  x="1100" y="212">on 16‑bit DCT payload</text>
+
+  <rect class="node" x="1080" y="270" width="260" height="110"/>
+  <text class="label" x="1100" y="298">Entropy (spectral)</text>
+  <text class="small"  x="1100" y="322">spectral_entropy_from_dct_int()</text>
+  <text class="small"  x="1100" y="342">energy over DCT bins</text>
+
+  <rect class="node" x="1080" y="400" width="260" height="90"/>
+  <text class="label" x="1100" y="428">UI Update</text>
+  <text class="small"  x="1100" y="452">draw_entropy_bars(...)</text>
+
+  <!-- Arrows within processing column -->
+  <path class="arrow" d="M890,220 L890,237" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M890,340 L890,357" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1040,280 L1080,230" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1040,300 L1080,300" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M1040,320 L1080,370" marker-end="url(#arrow)"/>
+
+  <!-- Output path -->
+  <rect class="node" x="380" y="140" width="260" height="90"/>
+  <text class="label" x="400" y="168">Audio Output</text>
+  <text class="small"  x="400" y="192">PyAudio stream.write()</text>
+
+  <rect class="node" x="380" y="250" width="260" height="80"/>
+  <text class="label" x="400" y="278">Optional Save</text>
+  <text class="small"  x="400" y="302">writeframesraw() → WAV</text>
+
+  <!-- Wires: loop → processing → output -->
+  <path class="arrow" d="M300,425 C520,425 520,190 740,190" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M890,400 C890,410 740,500 510,500 C480,500 480,250 480,250" marker-end="url(#arrow)"/>
+  <path class="arrow" d="M890,400 C890,410 720,460 510,460 C500,460 500,200 500,200" marker-end="url(#arrow)"/>
+
+  <!-- Related Tools (bottom) -->
+  <rect class="node" x="40" y="580" width="420" height="120"/>
+  <text class="label" x="60" y="608">synth_intro.py</text>
+  <text class="small"  x="60" y="632">• build_buffer(): pad/arp + drums + bass</text>
+  <text class="small"  x="60" y="652">• play_with_pyaudio()</text>
+  <text class="small"  x="60" y="672">• list/select devices (quiet)</text>
+
+  <rect class="node" x="500" y="580" width="420" height="140"/>
+  <text class="label" x="520" y="608">frequency_visually.py</text>
+  <text class="small"  x="520" y="632">• load WAV → mono float</text>
+  <text class="small"  x="520" y="652">• waveform.png, spectrum.png</text>
+  <text class="small"  x="520" y="672">• spectrogram.png</text>
+
+  <rect class="node" x="960" y="580" width="380" height="120"/>
+  <text class="label" x="980" y="608">Shared Concepts</text>
+  <text class="small"  x="980" y="632">• Sample rate 44.1 kHz</text>
+  <text class="small"  x="980" y="652">• Block size 1024 frames</text>
+  <text class="small"  x="980" y="672">• Device selection via PyAudio</text>
+
+  <!-- Notes -->
+  <rect class="note" x="740" y="460" width="300" height="30"/>
+  <text class="small" x="750" y="480">Entropy computed on 16‑bit DCT payload; UI shows value + spectral</text>
+
+  <!-- Legend -->
+  <text class="label" x="40" y="980">Legend: rounded boxes = functions/steps, gray groups = subsystems, arrows = data/control flow</text>
+</svg>
+
